@@ -1,0 +1,114 @@
+/* TurboTransition - Core Styles */
+
+/* CSS Variables for customizable properties */
+:root {
+  --tt-duration: 500ms;
+  --tt-timing-function: ease-in-out;
+  --tt-custom-duration: var(--tt-duration);
+}
+
+/* Container that holds the slots */
+.tt-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  /* Direct access to variables for the container */
+  --tt-custom-duration: var(--tt-duration);
+}
+
+/* Common styles for slots */
+.tt-slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition-property: transform, opacity;
+  /* Use the direct variable with !important to override any other styles */
+  transition-duration: var(--tt-custom-duration) !important;
+  transition-timing-function: var(--tt-timing-function);
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* Active slot is visible */
+.tt-slot.active {
+  position: relative;
+  visibility: visible;
+  opacity: 1;
+  z-index: 1;
+}
+
+/* During animation, both slots should be visible with proper z-index */
+.tt-animating .tt-slot {
+  z-index: 1;
+  visibility: visible;
+}
+
+.tt-animating .tt-slot.active {
+  z-index: 2;
+}
+
+/* Disable transitions temporarily */
+.tt-no-transition .tt-slot {
+  transition: none !important;
+}
+
+.tt-no-transition.tt-container {
+  transition: none !important;
+}
+
+/* Animation Variants */
+
+/* 1. Fade - pure opacity animation, no transforms */
+.tt-variant-fade .tt-slot {
+  transform: translateX(0) !important;
+}
+
+.tt-variant-fade.tt-animating .tt-slot.active {
+  opacity: 0;
+}
+
+.tt-variant-fade.tt-animating .tt-slot:not(.active) {
+  opacity: 1;
+}
+
+/* 2. Slide Horizontal - default variant handled by JS */
+
+/* 3. Zoom */
+.tt-variant-zoom .tt-slot:not(.active) {
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.tt-variant-zoom.tt-animating .tt-slot.active {
+  transform: scale(1.2);
+  opacity: 0;
+}
+
+.tt-variant-zoom.tt-animating .tt-slot:not(.active) {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* 4. Bounce */
+.tt-variant-bounce .tt-slot {
+  transition-property: transform, opacity;
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1), var(--tt-timing-function);
+  /* Use the direct variable with !important to override any other styles */
+  transition-duration: var(--tt-custom-duration) !important;
+}
+
+/* Positions for bounce variant are handled by JS */
+
+/* Debug information - show actual duration value */
+.tt-container::before {
+  content: attr(style);
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 8px;
+  opacity: 0.3;
+  z-index: 100;
+  pointer-events: none;
+}
